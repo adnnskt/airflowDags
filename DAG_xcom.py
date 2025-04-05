@@ -1,7 +1,7 @@
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from datetime import datetime
-from airflow.operator.python_operator import PythonOperator
+from airflow.operators.python_operator import PythonOperator
 
 dag = DAG('dag_xcom', description='DAG exemplo de utilização do xcom.', 
             schedule_interval=None, start_date=datetime(2025, 3, 5), catchup=False)
