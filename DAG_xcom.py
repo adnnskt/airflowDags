@@ -1,13 +1,25 @@
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from datetime import datetime
-from airflow.operators.dagrun_operator import TriggerDagRunOperator
+from airflow.operator.python_operator import PythonOperator
 
-dag = DAG('dag_run_dag', description='DAG exemplo que executa uma outra dag.', 
+dag = DAG('dag_xcom', description='DAG exemplo de utilização do xcom.', 
             schedule_interval=None, start_date=datetime(2025, 3, 5), catchup=False)
 
-task1 = BashOperator(task_id="tsk1", bash_command="sleep 5", dag=dag)
-task2 = TriggerDagRunOperator(task_id="tsk2", trigger_dag_id="dag_called", dag=dag)
 
+def task_write(**kwargs):
+    ti = kwargs['ti']
+    ti.xcom_push(key='valorxcom1', value=10200)
+    
+
+task1 = PythonOperator(task_id="tsk1", python_callable=task_write  , dag=dag)
+
+def task_read(**kwargs):
+    ti = kwargs['ti']
+    valor = ti.xcom_pull(key='valorxcom1')
+    print(f'Valor do xcom: {valor}')
+
+
+task2 = PythonOperator(task_id="tsk2", python_callable=task_read, dag=dag)
 
 task1 >> task2
