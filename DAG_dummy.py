@@ -2,14 +2,15 @@ from airflow import DAG
 from airflow.operators.bash_operator import BashOperator
 from datetime import datetime
 
-dag = DAG('dag_xcom', description='DAG exemplo de utilização do xcom.', 
+dag = DAG('dummy', description='DAG exemplo de utilização do dummy.', 
             schedule_interval=None, start_date=datetime(2025, 3, 5), catchup=False)
 
 
-def task_write(**kwargs):
-    ti = kwargs['ti']
-    ti.xcom_push(key='valorxcom1', value=10200)
-    
+task1 = BashOperator(task_id="tsk1", bash_command="sleep 1", dag=dag)
+task2 = BashOperator(task_id="tsk2", bash_command="sleep 1", dag=dag)
+task3 = BashOperator(task_id="tsk3", bash_command="sleep 1", dag=dag)
+task4 = BashOperator(task_id="tsk4", bash_command="sleep 1", dag=dag)
+task5 = BashOperator(task_id="tsk5", bash_command="sleep 1", dag=dag)
 
-task1 = PythonOperator(task_id="tsk1", python_callable=task_write  , dag=dag)
 
+[task1, task2, task3] >> [task4, task5]
