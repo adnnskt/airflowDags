@@ -13,4 +13,4 @@ task4 = BashOperator(task_id="tsk4", bash_command="sleep 1", dag=dag)
 task5 = BashOperator(task_id="tsk5", bash_command="sleep 1", dag=dag)
 
 
-[task1, task2, task3] >> [task4, task5]
+task1 >> task2 >> task3 >> [task4, task5]
